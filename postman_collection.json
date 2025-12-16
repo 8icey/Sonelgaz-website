@@ -1,0 +1,26 @@
+{
+  "info": {
+    "name": "Sonelgaz API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Project",
+      "request": {
+        "method": "POST",
+        "url": "http://localhost:3000/api/projects",
+        "body": {
+          "mode": "raw",
+          "raw": "{ \"title\": \"Maintenance Platform\" }"
+        }
+      }
+    },
+    {
+      "name": "Get Projects",
+      "request": {
+        "method": "GET",
+        "url": "http://localhost:3000/api/projects"
+      }
+    }
+  ]
+}
