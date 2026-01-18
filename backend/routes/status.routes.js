@@ -1,7 +1,6 @@
 const router = require("express").Router();
-const controller = require("../controllers/task.controller");
+const controller = require("../controllers/status.controller");
 
 router.get("/", controller.findAll);
-router.post("/", controller.create);
 
 module.exports = router;
