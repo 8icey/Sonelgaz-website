@@ -39,11 +39,19 @@ exports.update = async (req, res, next) => {
   }
 };
 
-exports.delete = async (req, res, next) => {
+exports.deleteClient = async (req, res, next) => {
   try {
-    await Client.destroy({ where: { id_client: req.params.id } });
+    const deleted = await Client.destroy({
+      where: { id_client: req.params.id }
+    });
+
+    if (!deleted) {
+      return res.status(404).json({ message: "Client not found" });
+    }
+
     res.json({ message: "Client deleted" });
   } catch (err) {
     next(err);
   }
 };
+
