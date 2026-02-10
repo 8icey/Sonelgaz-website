@@ -35,14 +35,19 @@ exports.findOne = async (req, res, next) => {
 exports.update = async (req, res, next) => {
   try {
     const updated = await Project.update(req.body, {
-      where: { id_project: req.params.id }
+      where: { id_project: Number(req.params.id) }
     });
-    if (!updated[0]) return res.status(404).json({ message: "Project not found" });
+
+    if (!updated[0]) {
+      return res.status(404).json({ message: "Project not found" });
+    }
+
     res.json({ message: "Project updated" });
   } catch (err) {
     next(err);
   }
 };
+
 
 exports.delete = async (req, res, next) => {
   try {
