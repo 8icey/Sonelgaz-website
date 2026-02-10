@@ -11,13 +11,14 @@ function renderNavbar() {
   if (role === "Admin") {
     nav.innerHTML += `
       <a href="clients.html">Clients</a>
-      <a href="project-edit.html">Projects</a>
+      <a href="projects.html">Projects</a>
+      <a href="users.html">Users</a>
     `;
   }
 
   if (role === "Manager") {
     nav.innerHTML += `
-      <a href="project-edit.html">Projects</a>
+      <a href="projects.html">Projects</a>
     `;
   }
 

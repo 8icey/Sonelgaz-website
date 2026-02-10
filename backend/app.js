@@ -24,8 +24,11 @@ app.use("/api/tasks", require("./routes/task.routes"));
 app.use("/api/auth", require("./routes/auth.routes"));
 app.use("/api/clients", require("./routes/client.routes"));
 app.use("/api/reports", require("./routes/report.routes"));
+app.use("/api/users", require("./routes/user.routes"));
+
 
 // Error handler
 app.use(require("./middlewares/error.middleware"));
+app.use("/api/users", require("./routes/user.routes"));
 
 module.exports = app;

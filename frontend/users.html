@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Users</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<script src="js/guard.js"></script>
+
+<div id="navbar"></div>
+
+<div class="container">
+  <h2>User Management</h2>
+
+  <button onclick="showCreate()">➕ Create User</button>
+
+  <table border="1" width="100%">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="usersTable"></tbody>
+  </table>
+
+  <div id="createForm" style="display:none;">
+    <h3>Create User</h3>
+    <input id="firstName" placeholder="First name">
+    <input id="lastName" placeholder="Last name">
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+
+    <select id="role">
+      <option value="1">Admin</option>
+      <option value="2">Manager</option>
+      <option value="3">Technician</option>
+    </select>
+
+    <button onclick="createUser()">Create</button>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/navbar.js"></script>
+<script src="js/users.js"></script>
+<script>
+  renderNavbar();
+</script>
+
+</body>
+</html>

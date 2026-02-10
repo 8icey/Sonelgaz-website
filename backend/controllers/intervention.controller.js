@@ -32,3 +32,21 @@ exports.findAll = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.updateStatus = async (req, res, next) => {
+  try {
+    const intervention = await Intervention.findByPk(req.params.id);
+
+    if (!intervention) {
+      return res.status(404).json({ message: "Intervention not found" });
+    }
+
+    intervention.id_status = req.body.id_status;
+    await intervention.save();
+
+    res.json({ message: "Status updated successfully" });
+  } catch (err) {
+    next(err);
+  }
+};
+

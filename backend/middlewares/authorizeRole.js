@@ -1,10 +1,7 @@
-// middlewares/authorizeRole.js
-module.exports = (requiredRole) => {
+module.exports = (...allowedRoles) => {
   return (req, res, next) => {
-    if (!req.user || req.user.role !== requiredRole) {
-      return res.status(403).json({
-        error: "Access denied: insufficient permissions"
-      });
+    if (!allowedRoles.includes(req.user.role)) {
+      return res.status(403).json({ message: "Access denied" });
     }
     next();
   };

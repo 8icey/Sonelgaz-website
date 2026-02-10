@@ -21,7 +21,7 @@ async function loadClients() {
       <td>${client.name}</td>
       <td>${client.email}</td>
       <td>
-        <button onclick="deleteClient(${client.id_client})">
+        <button class="danger" onclick="deleteClient(${client.id_client})">
           Delete
         </button>
       </td>
@@ -32,14 +32,15 @@ async function loadClients() {
 }
 
 async function deleteClient(id) {
-  if (!confirm("Are you sure you want to delete this client?")) return;
+  if (!confirm("⚠️ This action is irreversible. Delete this client?")) return;
 
-  await apiFetch(`/clients/${id}`, {
-    method: "DELETE"
-  });
-
-  alert("Client deleted");
-  loadClients();
+  try {
+    await apiFetch(`/clients/${id}`, { method: "DELETE" });
+    alert("✅ Client deleted successfully");
+    loadClients();
+  } catch {
+    alert("❌ Failed to delete client");
+  }
 }
 
 loadClients();

@@ -7,21 +7,20 @@ function goBack() {
 
 async function loadInterventions() {
   const interventions = await apiFetch("/interventions");
-
   table.innerHTML = "";
 
   interventions.forEach(i => {
     const users = i.Users?.map(u => u.first_name).join(", ") || "-";
 
     let actionsHtml = `
-      <button onclick="viewIntervention(${i.id_intervention})">
+      <button class="primary" onclick="viewIntervention(${i.id_intervention})">
         View
       </button>
     `;
 
-    if (role === "ADMIN") {
+    if (role === "Admin") {
       actionsHtml += `
-        <button onclick="assignUser(${i.id_intervention})">
+        <button class="secondary" onclick="assignUser(${i.id_intervention})">
           Assign User
         </button>
       `;
@@ -41,8 +40,7 @@ async function loadInterventions() {
 }
 
 function viewIntervention(id) {
-  alert("Viewing intervention ID: " + id);
-  // Later: redirect to intervention details page
+  window.location.href = `intervention.html?id=${id}`;
 }
 
 async function assignUser(interventionId) {

@@ -1,7 +1,45 @@
 body {
-  font-family: Arial;
-  margin: 40px;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  background: #f4f6f8;
 }
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 20px;
+}
+
+h2, h3 {
+  margin-top: 0;
+}
+
+button {
+  padding: 6px 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+button.primary {
+  background: #1976d2;
+  color: white;
+}
+
+button.danger {
+  background: #d32f2f;
+  color: white;
+}
+
+button.secondary {
+  background: #555;
+  color: white;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
 
 input, button {
   display: block;
@@ -10,9 +48,72 @@ input, button {
 
 table {
   border-collapse: collapse;
+  background: white;
 }
 
-td, th {
-  border: 1px solid #ccc;
-  padding: 8px;
+th, td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background: #eeeeee;
+}
+
+tr:hover {
+  background: #f1f1f1;
+}
+
+#navbar {
+  background: #0d47a1;
+  color: white;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#navbar a {
+  color: white;
+  text-decoration: none;
+  margin-right: 15px;
+  font-weight: 500;
+}
+
+#navbar a:hover {
+  text-decoration: underline;
+}
+
+.brand {
+  font-weight: bold;
+  margin-right: 20px;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+}
+
+.user-info {
+  margin-right: 15px;
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.logout-btn {
+  background: #d32f2f;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.logout-btn:hover {
+  opacity: 0.9;
 }

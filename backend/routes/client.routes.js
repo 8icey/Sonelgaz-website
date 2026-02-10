@@ -13,7 +13,7 @@ router.put("/:id", controller.update);
 router.delete(
   "/:id",
   authenticate,
-  authorizeRole("ADMIN"),
+  authorizeRole("Admin"),
   controller.deleteClient
 );
 module.exports = router;

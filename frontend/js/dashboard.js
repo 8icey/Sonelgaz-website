@@ -33,10 +33,16 @@
 //   localStorage.clear();
 //   window.location.href = "index.html";
 // });
-const name = localStorage.getItem("username");
-const role = localStorage.getItem("role");
-
-document.getElementById("welcome").innerText =
-  `Welcome ${name} (${role})`;
-
 renderNavbar();
+
+const role = localStorage.getItem("role");
+const menu = document.getElementById("menu");
+
+menu.innerHTML = `
+  <li><a href="interventions.html">📋 Interventions</a></li>
+`;
+
+if (role === "Admin") {
+  menu.innerHTML += `<li><a href="clients.html">👥 Manage Clients</a></li>`;
+}
+

@@ -18,4 +18,21 @@ exports.findAll = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+
+  exports.delete = async (req, res, next) => {
+  try {
+    const deleted = await User.destroy({
+      where: { id_user: req.params.id }
+    });
+
+    if (!deleted) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json({ message: "User deleted successfully" });
+  } catch (err) {
+    next(err);
+  }
+};
+
 };
