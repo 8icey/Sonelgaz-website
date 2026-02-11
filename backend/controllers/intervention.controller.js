@@ -50,3 +50,36 @@ exports.updateStatus = async (req, res, next) => {
   }
 };
 
+exports.reassignUser = async (req, res, next) => {
+  try {
+    const intervention = await Intervention.findByPk(req.params.id);
+
+    if (!intervention)
+      return res.status(404).json({ message: "Intervention not found" });
+
+    // Replace existing users
+    await intervention.setUsers([req.body.userId]);
+
+    res.json({ message: "User reassigned successfully" });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+exports.unassignUser = async (req, res, next) => {
+  try {
+    const intervention = await Intervention.findByPk(req.params.id);
+
+    if (!intervention) {
+      return res.status(404).json({ message: "Intervention not found" });
+    }
+
+    await intervention.removeUser(req.params.userId);
+
+    res.json({ message: "User unassigned successfully" });
+  } catch (err) {
+    next(err);
+  }
+};
+

@@ -8,11 +8,21 @@ if (localStorage.getItem("role") !== "Admin") {
 
 const table = document.getElementById("usersTable");
 
+let usersCache = [];
+
 // ==============================
-// UI HELPERS
+// MODAL CONTROLS
 // ==============================
 function showCreate() {
-  document.getElementById("createForm").style.display = "block";
+  document.getElementById("userModal").style.display = "block";
+}
+
+function closeModal() {
+  document.getElementById("userModal").style.display = "none";
+}
+
+function closeEditModal() {
+  document.getElementById("editModal").style.display = "none";
 }
 
 // ==============================
@@ -21,6 +31,7 @@ function showCreate() {
 async function loadUsers() {
   try {
     const users = await apiFetch("/users");
+    usersCache = users;
 
     table.innerHTML = "";
 
@@ -32,9 +43,8 @@ async function loadUsers() {
           <td>${u.email}</td>
           <td>${u.Role?.name || "-"}</td>
           <td>
-            <button onclick="deleteUser(${u.id_user})">
-              Delete
-            </button>
+            <button onclick="editUser(${u.id_user})">Edit</button>
+            <button onclick="deleteUser(${u.id_user})">Delete</button>
           </td>
         </tr>
       `;
@@ -55,7 +65,6 @@ async function createUser() {
   const password  = document.getElementById("password").value;
   const role      = document.getElementById("role").value;
 
-  // Basic frontend validation
   if (!firstName || !lastName || !email || !password || !role) {
     alert("Please fill in all fields");
     return;
@@ -75,14 +84,65 @@ async function createUser() {
 
     alert(res.message || "User created successfully");
 
-    // Reset form
     document.getElementById("createForm").reset();
-
+    closeModal();
     loadUsers();
 
   } catch (err) {
-    // THIS is the important fix 👇
     alert(err.message || "Failed to create user");
+  }
+}
+
+// ==============================
+// EDIT USER
+// ==============================
+function editUser(id) {
+  const user = usersCache.find(u => u.id_user === id);
+  if (!user) return;
+
+  document.getElementById("editUserId").value = user.id_user;
+  document.getElementById("editFirstName").value = user.first_name;
+  document.getElementById("editLastName").value = user.last_name;
+  document.getElementById("editEmail").value = user.email;
+  document.getElementById("editRole").value = user.id_role;
+
+  document.getElementById("editModal").style.display = "block";
+}
+
+// ==============================
+// UPDATE USER
+// ==============================
+async function updateUser() {
+  const id = document.getElementById("editUserId").value;
+
+  const first_name = document.getElementById("editFirstName").value.trim();
+  const last_name  = document.getElementById("editLastName").value.trim();
+  const email      = document.getElementById("editEmail").value.trim();
+  const id_role    = document.getElementById("editRole").value;
+
+  if (!first_name || !last_name || !email || !id_role) {
+    alert("Please fill all fields");
+    return;
+  }
+
+  try {
+    const res = await apiFetch(`/users/${id}`, {
+      method: "PUT",
+      body: JSON.stringify({
+        first_name,
+        last_name,
+        email,
+        id_role
+      })
+    });
+
+    alert(res.message || "User updated successfully");
+
+    closeEditModal();
+    loadUsers();
+
+  } catch (err) {
+    alert(err.message || "Failed to update user");
   }
 }
 
@@ -105,7 +165,4 @@ async function deleteUser(id) {
   }
 }
 
-// ==============================
-// INIT
-// ==============================
 loadUsers();

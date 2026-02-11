@@ -1,42 +1,66 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Intervention Details</title>
+  <title>Intervention Management</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <script src="js/guard.js"></script>
 
-<h2>Intervention Details</h2>
+<div id="navbar"></div>
 
-<div id="details"></div>
-<div id="statusSection" class="card">
-  <h3>Update Status</h3>
+<div class="container">
 
-  <select id="statusSelect">
-    <option value="1">Pending</option>
-    <option value="2">In Progress</option>
-    <option value="3">Completed</option>
-    <option value="4">Cancelled</option>
-  </select>
+  <h2>Intervention Management</h2>
 
-  <button class="primary" onclick="updateStatus()">Update Status</button>
+  <div id="details" class="card"></div>
+
+  <div class="card horizontal-card">
+
+    <!-- STATUS -->
+    <div class="action-block">
+      <h3>Status</h3>
+
+      <select id="statusSelect">
+        <option value="1">Pending</option>
+        <option value="2">In Progress</option>
+        <option value="3">Completed</option>
+        <option value="4">Cancelled</option>
+      </select>
+
+      <button class="primary" onclick="updateStatus()">
+        Update Status
+      </button>
+    </div>
+
+    <!-- ASSIGN -->
+    <div class="action-block">
+      <h3>Assign User</h3>
+
+      <select id="userSelect"></select>
+
+      <button class="secondary" onclick="assignUser()">
+        Assign
+      </button>
+
+      <div id="assignedUsersList" class="assigned-users"></div>
+    </div>
+
+  </div>
+
+  <button class="secondary" onclick="goBack()">
+    ⬅ Back to Interventions
+  </button>
+
 </div>
-<div id="assignSection" style="display:none;">
-  <h3>Assign User</h3>
-
-  <select id="userSelect">
-    <option value="">-- Select a user --</option>
-  </select>
-
-  <button onclick="assignUser()">Assign</button>
-</div>
-
-<button onclick="goBack()">⬅ Back to Interventions</button>
-
 
 <script src="js/api.js"></script>
+<script src="js/navbar.js"></script>
 <script src="js/intervention.js"></script>
+<script>
+  renderNavbar();
+</script>
+
 </body>
 </html>

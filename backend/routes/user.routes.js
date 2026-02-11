@@ -4,7 +4,6 @@ const controller = require("../controllers/user.controller");
 const authenticate = require("../middlewares/auth.middleware");
 const authorizeRole = require("../middlewares/authorizeRole");
 
-// ADMIN ONLY
 router.get(
   "/",
   authenticate,
@@ -18,5 +17,19 @@ router.post(
   authorizeRole("Admin"),
   controller.create
 );
-router.delete("/:id", authenticate, controller.delete);
+
+router.delete(
+  "/:id",
+  authenticate,
+  authorizeRole("Admin"),
+  controller.delete
+);
+
+router.put(
+  "/:id",
+  authenticate,
+  authorizeRole("Admin"),
+  controller.update
+);
+
 module.exports = router;

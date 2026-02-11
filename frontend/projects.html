@@ -11,14 +11,18 @@
 <div id="navbar"></div>
 
 <div class="container">
-  <h2>Projects</h2>
+  <h2>Project Management</h2>
 
-  <table border="1" width="100%">
+  <button class="primary" onclick="showCreate()">➕ Create Project</button>
+
+  <table width="100%">
     <thead>
       <tr>
         <th>ID</th>
         <th>Title</th>
         <th>Description</th>
+        <th>Start</th>
+        <th>End</th>
         <th>Actions</th>
       </tr>
     </thead>
@@ -26,12 +30,48 @@
   </table>
 </div>
 
+<!-- CREATE MODAL -->
+<div id="projectModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+
+    <h3>Create Project</h3>
+
+    <form onsubmit="event.preventDefault(); createProject();">
+      <input id="title" placeholder="Title" required>
+      <input id="description" placeholder="Description">
+      <input id="startDate" type="date">
+      <input id="endDate" type="date">
+
+      <button class="primary" type="submit">Create</button>
+    </form>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div id="editProjectModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeEditModal()">&times;</span>
+
+    <h3>Edit Project</h3>
+
+    <form onsubmit="event.preventDefault(); updateProject();">
+      <input type="hidden" id="editProjectId">
+
+      <input id="editTitle" required>
+      <input id="editDescription">
+      <input id="editStartDate" type="date">
+      <input id="editEndDate" type="date">
+
+      <button class="primary" type="submit">Update</button>
+    </form>
+  </div>
+</div>
+
 <script src="js/api.js"></script>
 <script src="js/navbar.js"></script>
 <script src="js/projects.js"></script>
-<script>
-  renderNavbar();
-</script>
+<script>renderNavbar();</script>
 
 </body>
 </html>

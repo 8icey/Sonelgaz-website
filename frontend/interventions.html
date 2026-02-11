@@ -7,31 +7,69 @@
 <body>
 
 <script src="js/guard.js"></script>
+
 <div id="navbar"></div>
 
-<h2>Interventions</h2>
+<div class="container">
+  <h2>Intervention Management</h2>
 
-<button onclick="goBack()">⬅ Back to Dashboard</button>
+  <button class="primary" onclick="showCreate()">➕ Create Intervention</button>
 
-<table border="1" width="100%" cellpadding="8">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Project</th>
-      <th>Status</th>
-      <th>Client</th>
-      <th>Users</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody id="interventionsTable"></tbody>
-</table>
+  <table width="100%">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Title</th>
+        <th>Project</th>
+        <th>Client</th>
+        <th>Status</th>
+        <th>Assigned Users</th>
+        <th>Scheduled Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="interventionsTable"></tbody>
+  </table>
+</div>
+
+<!-- CREATE MODAL -->
+<div id="interventionModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+
+    <h3>Create Intervention</h3>
+
+    <form onsubmit="event.preventDefault(); createIntervention();">
+
+      <input id="title" placeholder="Title" required>
+      <input id="description" placeholder="Description">
+
+      <label>Project</label>
+      <select id="projectSelect" required></select>
+
+      <label>Client</label>
+      <select id="clientSelect" required></select>
+
+      <label>Status</label>
+      <select id="statusSelect">
+        <option value="1">Pending</option>
+        <option value="2">In Progress</option>
+        <option value="3">Completed</option>
+        <option value="4">Cancelled</option>
+      </select>
+
+      <label>Scheduled Date</label>
+      <input id="scheduledDate" type="date">
+
+      <button class="primary" type="submit">Create</button>
+    </form>
+  </div>
+</div>
 
 <script src="js/api.js"></script>
-<script src="js/interventions.js"></script>
 <script src="js/navbar.js"></script>
-<script>
-    renderNavbar();
-  </script>
+<script src="js/interventions.js"></script>
+<script>renderNavbar();</script>
+
 </body>
 </html>
