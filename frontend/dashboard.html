@@ -10,12 +10,30 @@
   <div class="container">
     <h2>Dashboard</h2>
     <!-- <ul id="menu"></ul> -->
+     <div class="card">
+  <h3>Overview</h3>
+  <p>Welcome to the Sonelgaz Intervention Management Platform.</p>
+  <p>Use the navigation bar to manage projects, interventions and users.</p>
+</div>
+     <div class="card">
+  <h3>Intervention Status Overview</h3>
+  <canvas id="statusChart"></canvas>
+</div>
+
   </div>
+  
+
 
   <script src="js/api.js"></script>
+  <script src="js/toast.js"></script>
+
   <script src="js/navbar.js"></script>
   <!-- <script>
     renderNavbar();
   </script> -->
   <script src="js/dashboard.js"></script>
+  <div id="toastContainer"></div>
+<script src="js/toast.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </body>

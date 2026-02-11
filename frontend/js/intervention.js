@@ -63,17 +63,27 @@ function renderAssignedUsers(users) {
 // LOAD ALL USERS
 // ======================
 async function loadUsersDropdown() {
-  const users = await apiFetch("/users");
+  try {
+    const users = await apiFetch("/users");
 
-  userSelect.innerHTML = `<option value="">-- Select user --</option>`;
+    userSelect.innerHTML = `<option value="">-- Select Technician --</option>`;
 
-  users.forEach(u => {
-    userSelect.innerHTML += `
-      <option value="${u.id_user}">
-        ${u.first_name} ${u.last_name}
-      </option>
-    `;
-  });
+    // Filter only Technicians
+    const technicians = users.filter(
+      u => u.Role && u.Role.name === "Technician"
+    );
+
+    technicians.forEach(u => {
+      userSelect.innerHTML += `
+        <option value="${u.id_user}">
+          ${u.first_name} ${u.last_name}
+        </option>
+      `;
+    });
+
+  } catch (err) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+    console.error(err);
+  }
 }
 
 // ======================

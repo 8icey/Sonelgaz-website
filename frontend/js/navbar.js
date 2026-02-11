@@ -6,11 +6,12 @@ function renderNavbar() {
   nav.innerHTML = `
     <a href="dashboard.html">Dashboard</a>
     <a href="interventions.html">Interventions</a>
+    <a href="clients.html">Clients</a>
   `;
 
   if (role === "Admin") {
     nav.innerHTML += `
-      <a href="clients.html">Clients</a>
+      
       <a href="projects.html">Projects</a>
       <a href="users.html">Users</a>
     `;
@@ -18,6 +19,7 @@ function renderNavbar() {
 
   if (role === "Manager") {
     nav.innerHTML += `
+    
       <a href="projects.html">Projects</a>
     `;
   }

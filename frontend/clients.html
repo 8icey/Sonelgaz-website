@@ -10,26 +10,66 @@
 
 <div id="navbar"></div>
 
-<h2>Client Management</h2>
+<div class="container">
 
-<table border="1" width="100%">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Name</th>
-      <th>Email</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody id="clientsTable"></tbody>
-</table>
+  <h2>Client Management</h2>
+
+  <button id="createBtn" class="primary" onclick="showCreate()">
+    ➕ Create Client
+  </button>
+
+  <table width="100%">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="clientsTable"></tbody>
+  </table>
+
+</div>
+
+<!-- CREATE MODAL -->
+<div id="clientModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+
+    <h3>Create Client</h3>
+
+    <input id="clientName" placeholder="Client Name">
+    <input id="clientEmail" placeholder="Client Email">
+
+    <button class="primary" onclick="createClient()">
+      Create
+    </button>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div id="editModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeEditModal()">&times;</span>
+
+    <h3>Edit Client</h3>
+
+    <input type="hidden" id="editClientId">
+    <input id="editClientName">
+    <input id="editClientEmail">
+
+    <button class="primary" onclick="updateClient()">
+      Update
+    </button>
+  </div>
+</div>
 
 <script src="js/api.js"></script>
 <script src="js/navbar.js"></script>
-<script>
-    renderNavbar();
-  </script>
 <script src="js/clients.js"></script>
-
+<script>renderNavbar();</script>
+<div id="toastContainer"></div>
+<script src="js/toast.js"></script>
 </body>
 </html>

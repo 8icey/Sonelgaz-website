@@ -24,14 +24,38 @@ exports.assignUser = async (req, res, next) => {
 
 exports.findAll = async (req, res, next) => {
   try {
-    const interventions = await Intervention.findAll({
-      include: [Project, Client, Status, User]
-    });
+    const user = req.user; // coming from auth middleware
+
+    let interventions;
+
+    if (user.role === "Technician") {
+      // Technician sees ONLY assigned interventions
+      interventions = await Intervention.findAll({
+        include: [
+          Project,
+          Client,
+          Status,
+          {
+            model: User,
+            where: { id_user: user.id }, // only his assignments
+            attributes: []
+          }
+        ]
+      });
+    } else {
+      // Admin / Manager see everything
+      interventions = await Intervention.findAll({
+        include: [Project, Client, Status, User]
+      });
+    }
+
     res.json(interventions);
+
   } catch (err) {
     next(err);
   }
 };
+
 
 exports.updateStatus = async (req, res, next) => {
   try {
