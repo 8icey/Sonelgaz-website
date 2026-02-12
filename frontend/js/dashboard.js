@@ -1,70 +1,106 @@
-// const role = localStorage.getItem("role");
-// const name = localStorage.getItem("username");
-
-// if (!role || !name) {
-//   alert("Session expired");
-//   window.location.href = "index.html";
-// }
-
-// document.getElementById("welcome").innerText =
-//   `Welcome ${name} (${role})`;
-
-// const menu = document.getElementById("menu");
-
-// menu.innerHTML = `
-//   <li><a href="interventions.html">View Interventions</a></li>
-// `;
-
-// if (role === "ADMIN") {
-//   menu.innerHTML += `
-//     <li><a href="clients.html">Manage Clients</a></li>
-//     <li><a href="project-edit.html">Manage Projects</a></li>
-//   `;
-// }
-
-// if (role === "MANAGER") {
-//   menu.innerHTML += `
-//     <li><a href="project-edit.html">Manage Projects</a></li>
-//   `;
-// }
-
-// // ✅ LOGOUT
-// document.getElementById("logoutBtn").addEventListener("click", () => {
-//   localStorage.clear();
-//   window.location.href = "index.html";
-// });
-renderNavbar();
-
 const role = localStorage.getItem("role");
-const menu = document.getElementById("menu");
+const userId = localStorage.getItem("userId");
 
-menu.innerHTML = `
-  <li><a href="interventions.html">📋 Interventions</a></li>
-`;
+const statsContainer = document.getElementById("statsContainer");
+const statusSummary = document.getElementById("statusSummary");
 
-if (role === "Admin") {
-  menu.innerHTML += `<li><a href="clients.html">👥 Manage Clients</a></li>`;
+// ==============================
+// LOAD DASHBOARD
+// ==============================
+async function loadDashboard() {
+  try {
+
+    const [projects, interventions, clients, users] = await Promise.all([
+      apiFetch("/projects"),
+      apiFetch("/interventions"),
+      role === "Admin" ? apiFetch("/clients") : Promise.resolve([]),
+      role === "Admin" ? apiFetch("/users") : Promise.resolve([])
+    ]);
+
+    renderStats(projects, interventions, clients, users);
+    renderStatusSummary(interventions);
+
+  } catch (err) {
+    alert(err.message || "Failed to load dashboard");
+  }
 }
 
-async function loadStats() {
-  const interventions = await apiFetch("/interventions");
+// ==============================
+// RENDER STATS CARDS
+// ==============================
+function renderStats(projects, interventions, clients, users) {
 
-  const total = interventions.length;
-  const completed = interventions.filter(i => i.Status?.name === "Completed").length;
-  const pending = interventions.filter(i => i.Status?.name === "Pending").length;
+  statsContainer.innerHTML = "";
 
-  document.getElementById("stats").innerHTML = `
-    <div class="card">
-      <h3>Statistics</h3>
-      <p>Total Interventions: ${total}</p>
-      <p>Completed: ${completed}</p>
-      <p>Pending: ${pending}</p>
+  // ADMIN
+  if (role === "Admin") {
+    createCard("Users", users.length);
+    createCard("Clients", clients.length);
+    createCard("Projects", projects.length);
+    createCard("Interventions", interventions.length);
+  }
+
+  // MANAGER
+  if (role === "Manager") {
+    createCard("Projects", projects.length);
+    createCard("Interventions", interventions.length);
+  }
+
+  // TECHNICIAN
+  if (role === "Technician") {
+    const myInterventions = interventions.filter(i =>
+      i.Users?.some(u => u.id_user == userId)
+    );
+
+    const completed = myInterventions.filter(i =>
+      i.Status?.name === "Completed"
+    );
+
+    const pending = myInterventions.filter(i =>
+      i.Status?.name === "Pending"
+    );
+
+    createCard("My Interventions", myInterventions.length);
+    createCard("Completed", completed.length);
+    createCard("Pending", pending.length);
+  }
+}
+
+// ==============================
+// CARD CREATOR
+// ==============================
+function createCard(title, value) {
+  statsContainer.innerHTML += `
+    <div class="stat-card">
+      <h3>${value}</h3>
+      <p>${title}</p>
     </div>
   `;
 }
-loadStats();
 
-async function loadStatusChart() {
+// ==============================
+// STATUS SUMMARY
+// ==============================
+function renderStatusSummary(interventions) {
+
+  const statusCounts = {};
+
+  interventions.forEach(i => {
+    const status = i.Status?.name || "Unknown";
+    statusCounts[status] = (statusCounts[status] || 0) + 1;
+  });
+
+  let html = `<h3>Intervention Status Overview</h3><ul>`;
+
+  for (let status in statusCounts) {
+    html += `<li>${status}: ${statusCounts[status]}</li>`;
+  }
+
+  html += "</ul>";
+
+  statusSummary.innerHTML = html;
+}
+async function loadChart() {
   const interventions = await apiFetch("/interventions");
 
   const counts = {
@@ -80,30 +116,31 @@ async function loadStatusChart() {
     }
   });
 
-  const ctx = document.getElementById("statusChart").getContext("2d");
+  const ctx = document.getElementById("statusChart");
 
   new Chart(ctx, {
-    type: "doughnut",
-    data: {
-      labels: Object.keys(counts),
-      datasets: [{
-        data: Object.values(counts),
-        backgroundColor: [
-          "#f9a825",
-          "#1e88e5",
-          "#43a047",
-          "#e53935"
-        ]
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: "bottom"
-        }
-      }
-    }
-  });
+  type: "doughnut",
+  data: {
+    labels: Object.keys(counts),
+    datasets: [{
+      data: Object.values(counts),
+      backgroundColor: [
+        "#ff9800",
+        "#2196f3",
+        "#4caf50",
+        "#f44336"
+      ]
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false
+  }
+});
+
 }
-loadStatusChart();
+
+loadChart();
+
+// INIT
+loadDashboard();

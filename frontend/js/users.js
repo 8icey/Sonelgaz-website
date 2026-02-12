@@ -1,14 +1,15 @@
 // ==============================
-// FRONTEND RBAC (ADMIN ONLY)
+// RBAC (ADMIN ONLY)
 // ==============================
 if (localStorage.getItem("role") !== "Admin") {
-  alert("Access denied");
   window.location.href = "dashboard.html";
 }
 
-const table = document.getElementById("usersTable");
-
 let usersCache = [];
+let currentPage = 1;
+const rowsPerPage = 5;
+
+const table = document.getElementById("usersTable");
 
 // ==============================
 // MODAL CONTROLS
@@ -32,41 +33,50 @@ async function loadUsers() {
   try {
     const users = await apiFetch("/users");
     usersCache = users;
-
-    table.innerHTML = "";
-
-    users.forEach(u => {
-      table.innerHTML += `
-        <tr>
-          <td>${u.id_user}</td>
-          <td>${u.first_name} ${u.last_name}</td>
-          <td>${u.email}</td>
-          <td>${u.Role?.name || "-"}</td>
-          <td>
-            <button onclick="editUser(${u.id_user})">Edit</button>
-            <button onclick="deleteUser(${u.id_user})">Delete</button>
-          </td>
-        </tr>
-      `;
-    });
-
+    currentPage = 1;
+    renderUsers();
   } catch (err) {
-    alert(err.message || "Failed to load users");
+    showToast(err.message, "error");
   }
+}
+
+function renderUsers() {
+  const start = (currentPage - 1) * rowsPerPage;
+  const end = start + rowsPerPage;
+  const paginated = usersCache.slice(start, end);
+
+  table.innerHTML = "";
+
+  paginated.forEach(u => {
+    table.innerHTML += `
+      <tr>
+        <td>${u.id_user}</td>
+        <td>${u.first_name} ${u.last_name}</td>
+        <td>${u.email}</td>
+        <td>${u.Role?.name || "-"}</td>
+        <td>
+          <button onclick="editUser(${u.id_user})">Edit</button>
+          <button onclick="deleteUser(${u.id_user})">Delete</button>
+        </td>
+      </tr>
+    `;
+  });
+
+  updatePagination();
 }
 
 // ==============================
 // CREATE USER
 // ==============================
 async function createUser() {
-  const firstName = document.getElementById("firstName").value.trim();
-  const lastName  = document.getElementById("lastName").value.trim();
-  const email     = document.getElementById("email").value.trim();
-  const password  = document.getElementById("password").value;
-  const role      = document.getElementById("role").value;
+  const firstName = firstNameInput.value.trim();
+  const lastName  = lastNameInput.value.trim();
+  const email     = emailInput.value.trim();
+  const password  = passwordInput.value;
+  const role      = roleSelect.value;
 
   if (!firstName || !lastName || !email || !password || !role) {
-    alert("Please fill in all fields");
+    showToast("Please fill in all fields", "error");
     return;
   }
 
@@ -82,14 +92,14 @@ async function createUser() {
       })
     });
 
-    alert(res.message || "User created successfully");
+    showToast(res.message || "User created successfully", "success");
 
     document.getElementById("createForm").reset();
     closeModal();
     loadUsers();
 
   } catch (err) {
-    alert(err.message || "Failed to create user");
+    showToast(err.message || "Failed to create user", "error");
   }
 }
 
@@ -100,11 +110,11 @@ function editUser(id) {
   const user = usersCache.find(u => u.id_user === id);
   if (!user) return;
 
-  document.getElementById("editUserId").value = user.id_user;
-  document.getElementById("editFirstName").value = user.first_name;
-  document.getElementById("editLastName").value = user.last_name;
-  document.getElementById("editEmail").value = user.email;
-  document.getElementById("editRole").value = user.id_role;
+  editUserId.value = user.id_user;
+  editFirstName.value = user.first_name;
+  editLastName.value = user.last_name;
+  editEmail.value = user.email;
+  editRole.value = user.id_role;
 
   document.getElementById("editModal").style.display = "block";
 }
@@ -113,15 +123,15 @@ function editUser(id) {
 // UPDATE USER
 // ==============================
 async function updateUser() {
-  const id = document.getElementById("editUserId").value;
+  const id = editUserId.value;
 
-  const first_name = document.getElementById("editFirstName").value.trim();
-  const last_name  = document.getElementById("editLastName").value.trim();
-  const email      = document.getElementById("editEmail").value.trim();
-  const id_role    = document.getElementById("editRole").value;
+  const first_name = editFirstName.value.trim();
+  const last_name  = editLastName.value.trim();
+  const email      = editEmail.value.trim();
+  const id_role    = editRole.value;
 
   if (!first_name || !last_name || !email || !id_role) {
-    alert("Please fill all fields");
+    showToast("Please fill all fields", "error");
     return;
   }
 
@@ -136,13 +146,13 @@ async function updateUser() {
       })
     });
 
-    alert(res.message || "User updated successfully");
+    showToast(res.message || "User updated successfully", "success");
 
     closeEditModal();
     loadUsers();
 
   } catch (err) {
-    alert(err.message || "Failed to update user");
+    showToast(err.message || "Failed to update user", "error");
   }
 }
 
@@ -150,19 +160,44 @@ async function updateUser() {
 // DELETE USER
 // ==============================
 async function deleteUser(id) {
-  if (!confirm("Are you sure you want to delete this user?")) return;
+  if (!confirm("Delete this user?")) return;
 
   try {
     const res = await apiFetch(`/users/${id}`, {
       method: "DELETE"
     });
 
-    alert(res.message || "User deleted");
+    showToast(res.message || "User deleted", "success");
     loadUsers();
 
   } catch (err) {
-    alert(err.message || "Failed to delete user");
+    showToast(err.message || "Failed to delete user", "error");
   }
 }
 
+// ==============================
+// PAGINATION
+// ==============================
+function nextPage() {
+  const totalPages = Math.ceil(usersCache.length / rowsPerPage);
+  if (currentPage < totalPages) {
+    currentPage++;
+    renderUsers();
+  }
+}
+
+function prevPage() {
+  if (currentPage > 1) {
+    currentPage--;
+    renderUsers();
+  }
+}
+
+function updatePagination() {
+  const totalPages = Math.ceil(usersCache.length / rowsPerPage);
+  document.getElementById("pageInfo").innerText =
+    `Page ${currentPage} of ${totalPages}`;
+}
+
+// INIT
 loadUsers();

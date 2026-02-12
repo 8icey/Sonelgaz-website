@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <link rel="icon" type="image/png" href="images/sonelgaz.png">
+
   <title>Interventions</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -14,6 +16,18 @@
   <h2>Intervention Management</h2>
 
   <button class="primary" onclick="showCreate()">➕ Create Intervention</button>
+  <div class="filters">
+  <input type="text" id="searchInput" placeholder="Search by title...">
+
+  <select id="filterStatus">
+    <option value="">All Status</option>
+    <option value="Pending">Pending</option>
+    <option value="In Progress">In Progress</option>
+    <option value="Completed">Completed</option>
+    <option value="Cancelled">Cancelled</option>
+  </select>
+</div>
+
 
   <table width="100%">
     <thead>
@@ -30,6 +44,11 @@
     </thead>
     <tbody id="interventionsTable"></tbody>
   </table>
+  <div style="margin-top: 15px;">
+  <button onclick="prevPage()">Previous</button>
+  <button onclick="nextPage()">Next</button>
+</div>
+
 </div>
 
 <!-- CREATE MODAL -->
@@ -74,6 +93,7 @@
 <script>renderNavbar();</script>
 <div id="toastContainer"></div>
 <script src="js/toast.js"></script>
+<div id="loader" class="loader"></div>
 
 </body>
 </html>

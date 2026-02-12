@@ -5,46 +5,33 @@ function getToken() {
 }
 
 async function apiFetch(endpoint, options = {}) {
-  const token = getToken();
 
-  const headers = {
-    "Content-Type": "application/json",
-    ...(token && { Authorization: `Bearer ${token}` }),
-    ...options.headers
-  };
-
-  let response;
+  const loader = document.getElementById("loader");
+  if (loader) loader.style.display = "block";
 
   try {
-    response = await fetch(`${API_URL}${endpoint}`, {
+    const token = getToken();
+
+    const headers = {
+      "Content-Type": "application/json",
+      ...(token && { Authorization: `Bearer ${token}` }),
+      ...options.headers
+    };
+
+    const response = await fetch(`${API_URL}${endpoint}`, {
       ...options,
       headers
     });
-  } catch (err) {
-    throw new Error("Network error or server unreachable");
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Request failed");
+    }
+
+    return await response.json();
+
+  } finally {
+    if (loader) loader.style.display = "none";
   }
-
-  // Handle auth errors globally
-  if (response.status === 401 || response.status === 403) {
-    alert("Access denied or session expired");
-    localStorage.clear();
-    window.location.href = "index.html";
-    return;
-  }
-
-  // 🔐 SAFE JSON CHECK (THIS FIXES YOUR ERROR)
-  const contentType = response.headers.get("content-type");
-
-  if (!contentType || !contentType.includes("application/json")) {
-    throw new Error("Server returned an invalid response");
-  }
-
-  const data = await response.json();
-
-  // Handle backend error messages
-  if (!response.ok) {
-    throw new Error(data.message || "Request failed");
-  }
-
-  return data;
 }
+

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <link rel="icon" type="image/png" href="images/sonelgaz.png">
+
   <title>Users</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -26,7 +28,15 @@
       </tr>
     </thead>
     <tbody id="usersTable"></tbody>
+
   </table>
+  <div style="margin-top: 15px;">
+  <button onclick="prevPage()">Previous</button>
+  <span id="pageInfo"></span>
+  <button onclick="nextPage()">Next</button>
+</div>
+
+
 <!-- CREATE USER MODAL -->
 <div id="userModal" class="modal">
   <div class="modal-content">
@@ -88,7 +98,7 @@
 </div>
 
 <script src="js/api.js"></script>
-<script src="js/toast.js"></script>
+
 
 <script src="js/navbar.js"></script>
 <script src="js/users.js"></script>
@@ -97,6 +107,7 @@
 </script>
 <div id="toastContainer"></div>
 <script src="js/toast.js"></script>
+<div id="loader" class="loader"></div>
 
 </body>
 </html>

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <link rel="icon" type="image/png" href="images/sonelgaz.png">
+
   <title>Clients</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -17,6 +19,13 @@
   <button id="createBtn" class="primary" onclick="showCreate()">
     ➕ Create Client
   </button>
+<input 
+  type="text" 
+  id="searchInput"
+  placeholder="Search by client name..."
+  onkeyup="searchClients()"
+  style="margin-bottom:15px; padding:6px; width:250px;"
+>
 
   <table width="100%">
     <thead>
@@ -28,7 +37,16 @@
       </tr>
     </thead>
     <tbody id="clientsTable"></tbody>
+    
   </table>
+<div style="margin-top: 15px;">
+  <div class="pagination">
+  <button onclick="prevPage()">Previous</button>
+  <span id="pageInfo"></span>
+  <button onclick="nextPage()">Next</button>
+</div>
+
+</div>
 
 </div>
 
@@ -71,5 +89,7 @@
 <script>renderNavbar();</script>
 <div id="toastContainer"></div>
 <script src="js/toast.js"></script>
+<div id="loader" class="loader"></div>
+
 </body>
 </html>

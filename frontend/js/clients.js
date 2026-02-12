@@ -6,6 +6,9 @@ const table = document.getElementById("clientsTable");
 const createBtn = document.getElementById("createBtn");
 
 let clientsCache = [];
+let currentPage = 1;
+const rowsPerPage = 5;
+
 
 // Hide create button for Technician
 if (role === "Technician" && createBtn) {
@@ -19,46 +22,57 @@ async function loadClients() {
   try {
     const clients = await apiFetch("/clients");
     clientsCache = clients;
-
-    table.innerHTML = "";
-
-    clients.forEach(c => {
-      let actions = "";
-
-      // MANAGER + ADMIN → can edit
-      if (role === "Admin" || role === "Manager") {
-        actions += `
-          <button class="secondary"
-            onclick="editClient(${c.id_client})">
-            Edit
-          </button>
-        `;
-      }
-
-      // ADMIN → can delete
-      if (role === "Admin") {
-        actions += `
-          <button class="danger"
-            onclick="deleteClient(${c.id_client})">
-            Delete
-          </button>
-        `;
-      }
-
-      table.innerHTML += `
-        <tr>
-          <td>${c.id_client}</td>
-          <td>${c.name}</td>
-          <td>${c.email}</td>
-          <td>${actions || "<span style='color:#888'>Read Only</span>"}</td>
-        </tr>
-      `;
-    });
+    renderClients(clients);
 
   } catch (err) {
-    console.error(err);
-    alert(err.message || "Failed to load clients");
+    showToast(err.message, "error");
   }
+}
+
+function renderClients(list = clientsCache) {
+
+
+  const start = (currentPage - 1) * rowsPerPage;
+  const end = start + rowsPerPage;
+  const paginated = list.slice(start, end);
+
+  table.innerHTML = "";
+
+  paginated.forEach(c => {
+
+    let actions = "";
+
+    if (role === "Admin" || role === "Manager") {
+      actions += `
+        <button class="secondary"
+          onclick="editClient(${c.id_client})">
+          Edit
+        </button>
+      `;
+    }
+
+    if (role === "Admin") {
+      actions += `
+        <button class="danger"
+          onclick="deleteClient(${c.id_client})">
+          Delete
+        </button>
+      `;
+    }
+
+    table.innerHTML += `
+      <tr>
+        <td>${c.id_client}</td>
+        <td>${c.name}</td>
+        <td>${c.email}</td>
+        <td>${actions || "-"}</td>
+      </tr>
+    `;
+  });
+
+  // const paginated = list.slice(start, end);
+updatePagination(list.length);
+
 }
 
 // =====================================
@@ -162,6 +176,37 @@ function showCreate() {
 
 function closeModal() {
   document.getElementById("clientModal").style.display = "none";
+}
+function nextPage() {
+  const totalPages = Math.ceil(clientsCache.length / rowsPerPage);
+  if (currentPage < totalPages) {
+    currentPage++;
+    renderClients(clientsCache);
+  }
+}
+
+function prevPage() {
+  if (currentPage > 1) {
+    currentPage--;
+    renderClients(clientsCache);
+  }
+}
+
+function updatePagination(totalItems) {
+  const totalPages = Math.ceil(totalItems / rowsPerPage);
+  document.getElementById("pageInfo").innerText =
+    `Page ${currentPage} of ${totalPages}`;
+}
+
+function searchClients() {
+  const value = document.getElementById("searchInput").value.toLowerCase();
+
+  const filtered = clientsCache.filter(c =>
+    c.name.toLowerCase().includes(value)
+  );
+
+  currentPage = 1;
+  renderClients(filtered);
 }
 
 // =====================================
